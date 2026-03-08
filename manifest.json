@@ -1,0 +1,21 @@
+{
+  "name": "Energy Saver",
+  "short_name": "EnergySaver",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffff00",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "energy-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "energy-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
