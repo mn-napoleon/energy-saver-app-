@@ -219,3 +219,39 @@ document.getElementById("watts").value = applianceWatts[name];
 }
 
 });
+
+if ("serviceWorker" in navigator) {
+
+navigator.serviceWorker.register("service-worker.js")
+
+.then(() => console.log("Service Worker Registered"))
+
+.catch(error => console.log("Service Worker Error:", error));
+
+}
+
+let deferredPrompt;
+
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+
+e.preventDefault();
+
+deferredPrompt = e;
+
+installBtn.style.display = "block";
+
+});
+
+installBtn.addEventListener("click", async () => {
+
+installBtn.style.display = "none";
+
+deferredPrompt.prompt();
+
+const { outcome } = await deferredPrompt.userChoice;
+
+deferredPrompt = null;
+
+});
