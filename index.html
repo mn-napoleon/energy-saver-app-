@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Energy Saver</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="phone">
+
+<h2>Energy Saver</h2>
+
+<!-- HOME SCREEN -->
+
+<!--This creates the login interface-->
+
+<div id="loginPage">
+
+<img src="energy-logo.png" class="logo">
+
+ <h1 class="appTitle">Smart Electricity Usage Monitor</h1>
+    
+<h2>Energy Saver Login</h2>
+
+<input type="email" id="email" placeholder="Enter Gmail or Outlook Email">
+
+<input type="password" id="password" placeholder="Enter Password">
+
+<button onclick="loginUser()">Login</button>
+
+<p id="loginMessage"></p>
+
+</div>
+
+<div id="home" class="hidden">
+
+<p>Current Usage: 12 kWh</p>
+<p>Estimated Cost: $1.50</p>
+<h3>Energy Usage Chart</h3>
+<canvas id="energyChart"></canvas>
+
+<button onclick="showInput()">Add Appliance Usage</button>
+
+</div>
+
+
+<!-- INPUT SCREEN -->
+
+<div id="input" class="hidden">
+
+<h3>Enter Appliance Usage</h3>
+<img src="appliance-help.png" class="helpImage">
+<input list="applianceList" id="appliance" placeholder="Appliance Name">
+
+<datalist id="applianceList">
+<option value="Television (TV)">
+<option value="Air Condition">
+<option value="Fan">
+<option value="Fridge">
+<option value="Blender">
+<option value="Room Bulb">
+<option value="Hall Light">
+<option value="Microwave">
+<option value="Rice Cooker">
+</datalist>
+
+<input id="hours" placeholder="Hours per Day">
+
+<input id="watts" placeholder="Power (Watts)">
+
+<button onclick="calculate()">Submit</button>
+
+<button onclick="goHome()">Back to Home</button>
+
+</div>
+
+
+<!-- SUMMARY SCREEN -->
+
+<div id="summary" class="hidden">
+
+<h3>Usage Summary</h3>
+
+<p id="dailyUsage"></p>
+<p id="dailyCost"></p>
+
+<!--This will display all Appliances the user added-->
+
+<h4>Appliances Entered</h4>
+<ul id="applianceListDisplay"></ul>
+
+<canvas id="usageChart"></canvas>
+
+<button onclick="showTips()">Energy Tips</button>
+
+<button onclick="goHome()">Back to Home</button>
+
+</div>
+
+
+<!-- TIPS SCREEN -->
+
+<div id="tips" class="hidden">
+
+<h3>Energy Tips</h3>
+<h3 id="moneySaved"></h3>
+
+<ul>
+
+<li class="tip1">Turn off lights when not needed</li>
+<li class="tip2">Unplug devices after use</li>
+<li class="tip3">Use energy efficient bulbs</li>
+<li class="tip4">Reduce standby power</li>
+
+</ul>
+
+<button onclick="goHome()">Back to Home</button>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
