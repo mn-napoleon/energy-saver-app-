@@ -6,6 +6,20 @@ const approvedEmails = [
 
 ];
 
+window.addEventListener("load", function(){
+
+setTimeout(function(){
+
+document.getElementById("splash-screen").style.display = "none";
+document.getElementById("app-content").style.display = "block";
+
+}, 2500);
+
+});
+
+document.addEventListener("contextmenu", function(e){
+e.preventDefault();
+});
 
 let appliances = [];
 
@@ -183,17 +197,23 @@ document.getElementById("summary").classList.add("hidden");
 document.getElementById("tips").classList.add("hidden");
 
 }
-const ctx = document.getElementById('energyChart');
+window.addEventListener("load", function(){
 
-new Chart(ctx, {
-type: 'bar',
-data: {
-labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-datasets: [{
-label: 'Energy Usage (kWh)',
-data: [4,5,3,6,4,7,5]
-}]
-}
+  const ctx = document.getElementById('energyChart');
+
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [{
+          label: 'Energy Usage (kWh)',
+          data: [4,5,3,6,4,7,5]
+        }]
+      }
+    });
+  }
+
 });
 const applianceWatts = {
 
@@ -208,7 +228,24 @@ const applianceWatts = {
 "rice cooker":700
 
 };
-document.getElementById("appliance").addEventListener("input", function(){
+
+window.addEventListener("load", function(){
+
+  const applianceInput = document.getElementById("appliance");
+
+  if (applianceInput) {
+    applianceInput.addEventListener("input", function(){
+
+      let name = this.value.toLowerCase();
+
+      if(applianceWatts[name]){
+        document.getElementById("watts").value = applianceWatts[name];
+      }
+
+    });
+  }
+
+});
 
 let name = this.value.toLowerCase();
 
@@ -218,7 +255,6 @@ document.getElementById("watts").value = applianceWatts[name];
 
 }
 
-});
 
 if ("serviceWorker" in navigator) {
 
@@ -232,17 +268,40 @@ navigator.serviceWorker.register("service-worker.js")
 
 let deferredPrompt;
 
-const installBtn = document.getElementById("installBtn");
+window.addEventListener("load", function(){
 
-window.addEventListener("beforeinstallprompt", (e) => {
+  const installBtn = document.getElementById("installBtn");
+
+  let deferredPrompt;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+
+    e.preventDefault();
+    deferredPrompt = e;
+
+    installBtn.style.display = "block";
+
+  });
+
+  installBtn.addEventListener("click", async () => {
+
+    installBtn.style.display = "none";
+
+    deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    deferredPrompt = null;
+
+  });
+
+});
 
 e.preventDefault();
 
 deferredPrompt = e;
 
 installBtn.style.display = "block";
-
-});
 
 installBtn.addEventListener("click", async () => {
 

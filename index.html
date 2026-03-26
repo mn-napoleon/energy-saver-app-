@@ -15,6 +15,19 @@
 
 <body>
 
+
+<div id="app-content" style="display:none;">
+<!-- Splash Screen -->
+<div id="splash-screen">
+  <img src="energy-logo.png" alt="Energy Saver Logo" class="logo">
+  <h1>Energy Saver</h1>
+  <p>Loading...</p>
+</div>
+
+<!-- Main App -->
+  <!-- Your existing app content here -->
+
+
 <div class="phone">
 
 <h2>Energy Saver</h2>
@@ -79,9 +92,11 @@
 
 <input id="watts" placeholder="Power (Watts)">
 
-<button onclick="calculate()">Submit</button>
+<button id="submitEnergy">Submit</button>
+
 
 <button onclick="goHome()">Back to Home</button>
+
 
 </div>
 
@@ -133,6 +148,61 @@
 
 <script src="script.js"></script>
 
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAHkCfD4Y-hrtS_QuXEUT24MCyiAamAPHA",
+authDomain: "energy-saver-app-178ad.firebaseapp.com",
+projectId: "energy-saver-app-178ad",
+storageBucket: "energy-saver-app-178ad.firebasestorage.app",
+messagingSenderId: "569294028986",
+appId: "1:569294028986:web:f1cd765cfef40cf64d4283"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("submitEnergy").addEventListener("click", saveEnergy);
+
+async function saveEnergy(){
+
+const appliance = document.getElementById("appliance").value;
+const hours = document.getElementById("hours").value;
+const watts = document.getElementById("watts").value;
+
+const energy = watts * hours;
+
+try {
+
+await addDoc(collection(db, "energy_usage"), {
+
+appliance: appliance,
+watts: watts,
+hours: hours,
+energy: energy,
+created: new Date()
+
+});
+
+alert("Energy usage saved");
+
+}
+
+catch(error){
+
+console.error(error);
+
+}
+
+}
+
+</script>
+</div>
 </body>
 
 </html>
