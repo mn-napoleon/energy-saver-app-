@@ -1,3 +1,6 @@
+let pageHistory = [];
+let currentPage = "loginPage"; // starting page
+
 const approvedEmails = [
 
 "admin@gmail.com",
@@ -26,6 +29,24 @@ let appliances = [];
 let totalEnergy = 0;
 let totalCost = 0;
 
+function navigateTo(pageId){
+
+  // Save current page before leaving
+  pageHistory.push(currentPage);
+
+  // Hide all pages
+  const pages = ["loginPage","home","input","summary","tips"];
+  pages.forEach(p => {
+    document.getElementById(p).classList.add("hidden");
+  });
+
+  // Show new page
+  document.getElementById(pageId).classList.remove("hidden");
+
+  // Update current page
+  currentPage = pageId;
+}
+
 function isValidEmail(email){
 
 return email.endsWith("@gmail.com") || email.endsWith("@outlook.com");
@@ -47,9 +68,7 @@ return;
 
 if(approvedEmails.includes(email)){
 
-document.getElementById("loginPage").style.display = "none";
-
-document.getElementById("home").classList.remove("hidden");
+navigateTo("home");
 
 }
 
@@ -156,18 +175,14 @@ document.getElementById("dailyUsage").innerText += "\n" + tipsMessage;
 document.getElementById("dailyCost").innerText =
 "Estimated Daily Cost (24 hours): $" + totalCost.toFixed(2);
 
-hideAll();
-
-document.getElementById("summary").classList.remove("hidden");
+navigateTo("summary");
 
 }
 
 
 function showTips(){
 
-hideAll();
-
-document.getElementById("tips").classList.remove("hidden");
+navigateTo("tips");
 
 let estimatedMonthlyCost = totalCost * 30;
 
@@ -179,24 +194,31 @@ document.getElementById("moneySaved").innerText =
 
 function goHome(){
 
-hideAll();
-
-document.getElementById("home").classList.remove("hidden");
+navigateTo("home");
 
 }
 
 
-function hideAll(){
+function goBack(){
 
-document.getElementById("home").classList.add("hidden");
+  if(pageHistory.length === 0) return;
 
-document.getElementById("input").classList.add("hidden");
+  // Get last visited page
+  const previousPage = pageHistory.pop();
 
-document.getElementById("summary").classList.add("hidden");
+  // Hide all pages
+  const pages = ["loginPage","home","input","summary","tips"];
+  pages.forEach(p => {
+    document.getElementById(p).classList.add("hidden");
+  });
 
-document.getElementById("tips").classList.add("hidden");
+  // Show previous page
+  document.getElementById(previousPage).classList.remove("hidden");
 
+  // Update current page
+  currentPage = previousPage;
 }
+
 window.addEventListener("load", function(){
 
   const ctx = document.getElementById('energyChart');
@@ -314,3 +336,7 @@ const { outcome } = await deferredPrompt.userChoice;
 deferredPrompt = null;
 
 });
+
+window.onload = () => {
+  navigateTo("loginPage");
+};

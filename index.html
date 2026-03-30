@@ -16,9 +16,9 @@
 <body>
 
 
-<div id="app-content" style="display:none;">
+<div id="app-content">
 <!-- Splash Screen -->
-<div id="splash-screen">
+<div id="splash-screen" style="display:none;">
   <img src="energy-logo.png" alt="Energy Saver Logo" class="logo">
   <h1>Energy Saver</h1>
   <p>Loading...</p>
@@ -63,7 +63,9 @@
 <h3>Energy Usage Chart</h3>
 <canvas id="energyChart"></canvas>
 
-<button onclick="showInput()">Add Appliance Usage</button>
+<button onclick="navigateTo('input')">Add Appliance</button>
+
+<button onclick="navigateTo('loginPage')">⬅ Back</button>
 
 </div>
 
@@ -94,8 +96,7 @@
 
 <button id="submitEnergy">Submit</button>
 
-
-<button onclick="goHome()">Back to Home</button>
+<button onclick="navigateTo('home')">Back to Home</button>
 
 
 </div>
@@ -117,9 +118,7 @@
 
 <canvas id="usageChart"></canvas>
 
-<button onclick="showTips()">Energy Tips</button>
-
-<button onclick="goHome()">Back to Home</button>
+<button onclick="navigateTo('tips')">Energy Tips</button>
 
 </div>
 
@@ -140,7 +139,7 @@
 
 </ul>
 
-<button onclick="goHome()">Back to Home</button>
+<button onclick="navigateTo('home')">Back to Home</button>
 
 </div>
 
