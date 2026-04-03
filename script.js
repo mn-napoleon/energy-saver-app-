@@ -23,6 +23,10 @@ let appliances = [];
 let totalEnergy = 0;
 let totalCost = 0;
 
+function showRecords(){
+  navigateTo("summary");
+}
+
 function navigateTo(pageId){
 
   // Save current page before leaving

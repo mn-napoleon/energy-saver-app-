@@ -53,6 +53,15 @@
 </div>
 
 <div id="home" class="hidden">
+<div class="top-bar">
+  <h3>Dashboard</h3>
+
+  <div class="notification" onclick="showRecords()">
+    🔔
+    <span id="recordCount" class="badge">0</span>
+  </div>
+</div>
+
 
 <p>Current Usage: 12 kWh</p>
 <p>Estimated Cost: $1.50</p>
@@ -271,6 +280,23 @@ async function loadEnergyData(){
   );
 
   const querySnapshot = await getDocs(q);
+
+// ✅ ADD THIS RIGHT AFTER FETCHING DATA
+const count = querySnapshot.size;
+
+document.getElementById("recordCount").innerText = count;
+
+//  OPTIONAL animation
+const bell = document.querySelector(".notification");
+
+if(bell){
+  if(count > 0){
+    bell.classList.add("active");
+  } else {
+    bell.classList.remove("active");
+  }
+}
+  document.getElementById("recordCount").innerText = querySnapshot.size;
 
   querySnapshot.forEach((doc) => {
 
