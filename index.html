@@ -44,11 +44,7 @@
     
 <h2>Energy Saver Login</h2>
 
-<input type="email" id="email" placeholder="Enter Gmail or Outlook Email">
-
-<input type="password" id="password" placeholder="Enter Password">
-
-<button onclick="loginUser()">Login</button>
+<button onclick="googleLogin()">Sign in with Google</button>
 
 <button id="installBtn" style="display:none;">Download Energy Saver App</button>
 
@@ -66,6 +62,8 @@
 <button onclick="navigateTo('input')">Add Appliance</button>
 
 <button onclick="navigateTo('loginPage')">⬅ Back</button>
+
+<button onclick="logoutUser()">Logout</button>
 
 </div>
 
@@ -154,6 +152,12 @@ window.addEventListener("load", loadEnergyData);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import { onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 
 const firebaseConfig = {
 apiKey: "AIzaSyAHkCfD4Y-hrtS_QuXEUT24MCyiAamAPHA",
@@ -165,7 +169,49 @@ appId: "1:569294028986:web:f1cd765cfef40cf64d4283"
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+onAuthStateChanged(auth, (user) => {
+
+  if(user){
+    navigateTo("home");
+    loadEnergyData();
+  } else {
+    navigateTo("loginPage");
+  }
+
+});
+
+const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
+
+window.googleLogin = async function(){
+
+  try {
+
+    const result = await signInWithPopup(auth, provider);
+
+    const user = result.user;
+
+    alert("Welcome " + user.displayName);
+
+    navigateTo("home");
+
+    loadEnergyData();
+
+  } catch (error) {
+    console.error("REAL ERROR:", error);
+    alert(error.message); // 👈 shows real problem
+  }
+
+};
+
+window.logoutUser = async function(){
+
+  await signOut(auth);
+
+  navigateTo("loginPage");
+
+};
 
 document.getElementById("submitEnergy").addEventListener("click", () => {
   calculate();   // existing logic
@@ -174,57 +220,62 @@ document.getElementById("submitEnergy").addEventListener("click", () => {
 
 async function saveEnergy(){
 
-const appliance = document.getElementById("appliance").value;
-const hours = document.getElementById("hours").value;
-const watts = document.getElementById("watts").value;
+  const appliance = document.getElementById("appliance").value;
+  const hours = document.getElementById("hours").value;
+  const watts = document.getElementById("watts").value;
 
-if(!appliance || !hours || !watts){
-  alert("Please fill all fields");
-  return;
-}
+  if(!appliance || !hours || !watts){
+    alert("Please fill all fields");
+    return;
+  }
 
-try {
+  const user = auth.currentUser;
 
-await addDoc(collection(db, "energy_usage"), {
+  try {
 
-appliance: appliance,
-hours: Number(hours),
-watts: Number(watts),
-created: new Date()
+    await addDoc(collection(db, "energy_usage"), {
 
-});
+      userId: user.uid,
+      appliance: appliance,
+      hours: Number(hours),
+      watts: Number(watts),
+      created: new Date()
 
-alert("Energy usage saved successfully");
+    });
 
-loadEnergyData(); // 👈 reload data after saving
+    alert("Saved successfully");
+    loadEnergyData();
 
-}
-
-catch(error){
-console.error(error);
-}
+  } catch(error){
+    console.error(error);
+  }
 
 }
 
 async function loadEnergyData(){
 
-const querySnapshot = await getDocs(collection(db, "energy_usage"));
+  const user = auth.currentUser;
+  const list = document.getElementById("applianceListDisplay");
 
-const list = document.getElementById("applianceListDisplay");
+  list.innerHTML = "";
 
-list.innerHTML = ""; // clear list
+  const querySnapshot = await getDocs(collection(db, "energy_usage"));
 
-querySnapshot.forEach((doc) => {
+  querySnapshot.forEach((doc) => {
 
-const data = doc.data();
+    const data = doc.data();
 
-const item = document.createElement("li");
+    if(data.userId === user.uid){
 
-item.innerText = `${data.appliance} - ${data.hours} hrs - ${data.watts}W`;
+      const item = document.createElement("li");
 
-list.appendChild(item);
+      item.innerText = `${data.appliance} - ${data.hours} hrs - ${data.watts}W`;
 
-});
+      list.appendChild(item);
+
+    }
+
+  });
 
 }
 

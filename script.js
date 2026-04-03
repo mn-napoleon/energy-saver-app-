@@ -1,13 +1,6 @@
 let pageHistory = [];
 let currentPage = "loginPage"; // starting page
 
-const approvedEmails = [
-
-"admin@gmail.com",
-"student1@gmail.com",
-"user@outlook.com"
-
-];
 
 window.addEventListener("load", function(){
 
@@ -19,6 +12,7 @@ document.getElementById("app-content").style.display = "block";
 }, 2500);
 
 });
+
 
 document.addEventListener("contextmenu", function(e){
 e.preventDefault();
@@ -46,41 +40,6 @@ function navigateTo(pageId){
   // Update current page
   currentPage = pageId;
 }
-
-function isValidEmail(email){
-
-return email.endsWith("@gmail.com") || email.endsWith("@outlook.com");
-
-}
-
-function loginUser(){
-
-let email = document.getElementById("email").value;
-
-if(!isValidEmail(email)){
-
-document.getElementById("loginMessage").innerText =
-"Please enter a Gmail or Outlook account";
-
-return;
-
-}
-
-if(approvedEmails.includes(email)){
-
-navigateTo("home");
-
-}
-
-else{
-
-document.getElementById("loginMessage").innerText =
-"Email is not approved for this system";
-
-}
-
-}
-
 
 function showInput(){
 
@@ -269,7 +228,6 @@ window.addEventListener("load", function(){
 
 });
 
-let name = this.value.toLowerCase();
 
 if(applianceWatts[name]){
 
@@ -290,50 +248,41 @@ navigator.serviceWorker.register("service-worker.js")
 
 let deferredPrompt;
 
-window.addEventListener("load", function(){
+window.addEventListener("beforeinstallprompt", (e) => {
+
+  e.preventDefault(); // stop automatic popup
+
+  deferredPrompt = e;
 
   const installBtn = document.getElementById("installBtn");
 
-  let deferredPrompt;
-
-  window.addEventListener("beforeinstallprompt", (e) => {
-
-    e.preventDefault();
-    deferredPrompt = e;
-
+  if (installBtn) {
     installBtn.style.display = "block";
+  }
 
-  });
+});
+
+window.addEventListener("load", () => {
+
+  const installBtn = document.getElementById("installBtn");
+
+  if (!installBtn) return;
 
   installBtn.addEventListener("click", async () => {
 
-    installBtn.style.display = "none";
+    if (!deferredPrompt) return;
 
     deferredPrompt.prompt();
 
     const { outcome } = await deferredPrompt.userChoice;
 
+    console.log("User choice:", outcome);
+
     deferredPrompt = null;
 
+    installBtn.style.display = "none";
+
   });
-
-});
-
-e.preventDefault();
-
-deferredPrompt = e;
-
-installBtn.style.display = "block";
-
-installBtn.addEventListener("click", async () => {
-
-installBtn.style.display = "none";
-
-deferredPrompt.prompt();
-
-const { outcome } = await deferredPrompt.userChoice;
-
-deferredPrompt = null;
 
 });
 
