@@ -150,7 +150,7 @@
 
 window.addEventListener("load", loadEnergyData);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } 
+import { getFirestore, collection, addDoc, getDocs, query, where } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -231,6 +231,12 @@ async function saveEnergy(){
 
   const user = auth.currentUser;
 
+  //  ADD THIS BLOCK RIGHT HERE
+  if(!user){
+    alert("You must be logged in");
+    return;
+  }
+
   try {
 
     await addDoc(collection(db, "energy_usage"), {
@@ -251,29 +257,29 @@ async function saveEnergy(){
   }
 
 }
-
 async function loadEnergyData(){
 
   const user = auth.currentUser;
-  const list = document.getElementById("applianceListDisplay");
+  if(!user) return;
 
+  const list = document.getElementById("applianceListDisplay");
   list.innerHTML = "";
 
-  const querySnapshot = await getDocs(collection(db, "energy_usage"));
+  const q = query(
+    collection(db, "energy_usage"),
+    where("userId", "==", user.uid)
+  );
+
+  const querySnapshot = await getDocs(q);
 
   querySnapshot.forEach((doc) => {
 
     const data = doc.data();
 
-    if(data.userId === user.uid){
+    const item = document.createElement("li");
+    item.innerText = `${data.appliance} - ${data.hours} hrs - ${data.watts}W`;
 
-      const item = document.createElement("li");
-
-      item.innerText = `${data.appliance} - ${data.hours} hrs - ${data.watts}W`;
-
-      list.appendChild(item);
-
-    }
+    list.appendChild(item);
 
   });
 
