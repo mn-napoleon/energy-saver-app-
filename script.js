@@ -228,21 +228,33 @@ window.addEventListener("load", function(){
 
 });
 
-
-if(applianceWatts[name]){
-
-document.getElementById("watts").value = applianceWatts[name];
-
-}
-
-
 if ("serviceWorker" in navigator) {
 
-navigator.serviceWorker.register("service-worker.js")
+  navigator.serviceWorker.register("service-worker.js").then(reg => {
 
-.then(() => console.log("Service Worker Registered"))
+    console.log("Service Worker Registered");
 
-.catch(error => console.log("Service Worker Error:", error));
+    //  Detect updates
+    reg.onupdatefound = () => {
+
+      const newWorker = reg.installing;
+
+      newWorker.onstatechange = () => {
+
+        if (newWorker.state === "installed") {
+
+          if (navigator.serviceWorker.controller) {
+            alert("New version available! Updating app...");
+            window.location.reload();
+          }
+
+        }
+
+      };
+
+    };
+
+  }).catch(error => console.log("Service Worker Error:", error));
 
 }
 
