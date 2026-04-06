@@ -220,24 +220,12 @@ const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
 window.googleLogin = async function(){
-
   try {
-
-    const result = await signInWithPopup(auth, provider);
-
-    const user = result.user;
-
-    alert("Welcome " + user.displayName);
-
-    navigateTo("home");
-
-    loadEnergyData();
-
+    await signInWithRedirect(auth, provider);
   } catch (error) {
     console.error("REAL ERROR:", error);
-    alert(error.message); // 👈 shows real problem
+    alert(error.message);
   }
-
 };
 
 
