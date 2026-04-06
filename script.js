@@ -138,10 +138,6 @@ tip + "\n" + tipsMessage;
 document.getElementById("dailyCost").innerText =
 "Estimated Daily Cost (24 hours): $" + totalCost.toFixed(2);
 
-document.getElementById("appliance").value = "";
-document.getElementById("hours").value = "";
-document.getElementById("watts").value = "";
-
 }
 
 

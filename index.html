@@ -248,8 +248,11 @@ window.logoutUser = async function(){
 };
 
 document.getElementById("submitEnergy").addEventListener("click", () => {
-  calculate();   // existing logic
-  saveEnergy();  // save to backend
+  calculate();
+
+  setTimeout(() => {
+    saveEnergy();
+  }, 100);
 });
 
 async function saveEnergy(){
@@ -289,6 +292,10 @@ async function saveEnergy(){
   } catch(error){
     console.error(error);
   }
+
+document.getElementById("appliance").value = "";
+document.getElementById("hours").value = "";
+document.getElementById("watts").value = "";
 
 }
 async function loadEnergyData(){
