@@ -44,7 +44,7 @@
     
 <h2>Energy Saver Login</h2>
 
-<button onclick="googleLogin()">Sign in with Google</button>
+<button id="googleBtn">Sign in with Google</button>
 
 <button id="installBtn" style="display:none;">Download Energy Saver App</button>
 
@@ -187,7 +187,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut }
+import { getAuth, signInWithRedirect, GoogleAuthProvider, signOut }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import { onAuthStateChanged }
@@ -219,14 +219,14 @@ onAuthStateChanged(auth, (user) => {
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
-window.googleLogin = async function(){
+document.getElementById("googleBtn").addEventListener("click", async () => {
   try {
     await signInWithRedirect(auth, provider);
   } catch (error) {
-    console.error("REAL ERROR:", error);
+    console.error(error);
     alert(error.message);
   }
-};
+});
 
 
 window.logoutUser = async function(){
