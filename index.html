@@ -54,12 +54,14 @@
 
 <div id="home" class="hidden">
 <div class="top-bar">
-  <h3>Dashboard</h3>
 
-  <div class="notification" onclick="showRecords()">
-    🔔
+  <h2>Energy Saver</h2>
+
+  <div class="notification" onclick="openNotification()">
+    <img src="bell.png" class="bell-icon">
     <span id="recordCount" class="badge">0</span>
   </div>
+
 </div>
 
 
@@ -147,6 +149,29 @@
 </ul>
 
 <button onclick="navigateTo('home')">Back to Home</button>
+
+<div id="notificationModal" class="modal hidden">
+
+  <div class="modal-content">
+    <h3>Your Appliance Records</h3>
+
+    <table id="recordsTable">
+      <thead>
+        <tr>
+          <th>Appliance</th>
+          <th>Hours</th>
+          <th>Watts</th>
+          <th>Daily Cost</th>
+          <th>Monthly Cost</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button onclick="closeNotification()">Close</button>
+  </div>
+
+</div>
 
 </div>
 
@@ -281,7 +306,7 @@ async function loadEnergyData(){
 
   const querySnapshot = await getDocs(q);
 
-// ✅ ADD THIS RIGHT AFTER FETCHING DATA
+//  ADD THIS RIGHT AFTER FETCHING DATA
 const count = querySnapshot.size;
 
 document.getElementById("recordCount").innerText = count;
@@ -296,19 +321,38 @@ if(bell){
     bell.classList.remove("active");
   }
 }
-  document.getElementById("recordCount").innerText = querySnapshot.size;
 
-  querySnapshot.forEach((doc) => {
+const tableBody = document.querySelector("#recordsTable tbody");
+tableBody.innerHTML = "";
 
-    const data = doc.data();
+querySnapshot.forEach((doc) => {
 
-    const item = document.createElement("li");
-    item.innerText = `${data.appliance} - ${data.hours} hrs - ${data.watts}W`;
+  const data = doc.data();
 
-    list.appendChild(item);
+  //  CALCULATIONS
+  let kwh = (data.watts * data.hours)/1000;
+  let dailyCost = kwh * 0.12;
+  let monthlyCost = dailyCost * 30;
 
-  });
+  //  Add to summary list (keep your old feature)
+  const item = document.createElement("li");
+  item.innerText = `${data.appliance} - ${data.hours} hrs - ${data.watts}W`;
+  list.appendChild(item);
 
+  //  Add to TABLE (NEW)
+  const row = `
+    <tr>
+      <td>${data.appliance}</td>
+      <td>${data.hours}</td>
+      <td>${data.watts}</td>
+      <td>$${dailyCost.toFixed(2)}</td>
+      <td>$${monthlyCost.toFixed(2)}</td>
+    </tr>
+  `;
+
+  tableBody.innerHTML += row;
+
+});
 }
 
 </script>

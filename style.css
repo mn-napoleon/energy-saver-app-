@@ -256,3 +256,37 @@ font-size:20px;
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
 }
+
+.bell-icon {
+  width: 25px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: white;
+  margin: 50px auto;
+  padding: 20px;
+  width: 90%;
+  border-radius: 10px;
+}
+
+#recordsTable {
+  width: 100%;
+  background: #d3d3d3;
+  color: black;
+  border-collapse: collapse;
+}
+
+#recordsTable th, #recordsTable td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}

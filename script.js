@@ -305,3 +305,10 @@ window.addEventListener("load", () => {
 window.onload = () => {
   navigateTo("loginPage");
 };
+function openNotification(){
+  document.getElementById("notificationModal").classList.remove("hidden");
+}
+
+function closeNotification(){
+  document.getElementById("notificationModal").classList.add("hidden");
+}
