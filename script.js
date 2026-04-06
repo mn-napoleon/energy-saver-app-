@@ -23,6 +23,15 @@ let appliances = [];
 let totalEnergy = 0;
 let totalCost = 0;
 
+const applianceIcons = {
+  "television (tv)": "icons/tv.png",
+  "fan": "icons/fan.png",
+  "fridge": "icons/fridge.png",
+  "microwave": "icons/microwave.png",
+  "rice cooker": "icons/ricecook.png",
+  "hall light": "icons/Halllight.png"
+};
+
 function showRecords(){
   navigateTo("summary");
 }
@@ -96,9 +105,15 @@ energy: kwh
 });
 let list = document.getElementById("applianceListDisplay");
 
-let item = document.createElement("li");
+let icon = applianceIcons[appliance.toLowerCase()] || "icons/default.png";
 
-item.innerText = appliance + " - " + watts + "W (" + kwh.toFixed(2) + " kWh)";
+item.innerHTML = `
+  <div class="appliance-item">
+    <img src="${icon}" class="appliance-icon">
+    <span>${appliance}</span>
+  </div>
+  <span>${kwh.toFixed(2)} kWh</span>
+`;
 
 list.appendChild(item);
 

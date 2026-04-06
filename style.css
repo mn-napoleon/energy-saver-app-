@@ -390,3 +390,14 @@ font-size:20px;
   justify-content:space-between;
   align-items:center;
 }
+.appliance-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.appliance-icon{
+  width:28px;
+  height:28px;
+  object-fit:contain;
+}
