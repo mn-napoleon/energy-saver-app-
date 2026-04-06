@@ -150,29 +150,6 @@
 
 <button onclick="navigateTo('home')">Back to Home</button>
 
-<div id="notificationModal" class="modal hidden">
-
-  <div class="modal-content">
-    <h3>Your Appliance Records</h3>
-
-    <table id="recordsTable">
-      <thead>
-        <tr>
-          <th>Appliance</th>
-          <th>Hours</th>
-          <th>Watts</th>
-          <th>Daily Cost</th>
-          <th>Monthly Cost</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <button onclick="closeNotification()">Close</button>
-  </div>
-
-</div>
-
 </div>
 
 </div>
@@ -355,15 +332,31 @@ querySnapshot.forEach((doc) => {
 });
 }
 
-window.openNotification = function(){
-  document.getElementById("notificationModal").classList.remove("hidden");
-}
-
-window.closeNotification = function(){
-  document.getElementById("notificationModal").classList.add("hidden");
-}
-
 </script>
+
+<div id="notificationModal" class="modal hidden">
+
+  <div class="modal-content">
+    <h3>Your Appliance Records</h3>
+
+    <table id="recordsTable">
+      <thead>
+        <tr>
+          <th>Appliance</th>
+          <th>Hours</th>
+          <th>Watts</th>
+          <th>Daily Cost</th>
+          <th>Monthly Cost</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button onclick="closeNotification()">Close</button>
+  </div>
+
+</div>
+
 </div>
 </body>
 
