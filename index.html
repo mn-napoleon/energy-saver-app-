@@ -55,7 +55,7 @@
 <div id="home" class="hidden">
 <div class="top-bar">
 
-  <h2>Energy Saver</h2>
+  <img src="ener.png" class="app-logo">
 
   <div class="notification" onclick="openNotification()">
     <img src="bell.png" class="bell-icon">
@@ -353,6 +353,14 @@ querySnapshot.forEach((doc) => {
   tableBody.innerHTML += row;
 
 });
+}
+
+window.openNotification = function(){
+  document.getElementById("notificationModal").classList.remove("hidden");
+}
+
+window.closeNotification = function(){
+  document.getElementById("notificationModal").classList.add("hidden");
 }
 
 </script>
