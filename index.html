@@ -152,6 +152,28 @@
 
 </div>
 
+<div class="developer-section">
+
+  <div class="dev-header" onclick="toggleDev()">
+    <h3>Developer Info ▼</h3>
+  </div>
+
+  <div id="devContent" class="hidden">
+
+    <img src="developer.png" class="dev-img">
+
+    <h3>Yeboah Napoleon Kofi</h3>
+
+    <p>Energy Saver App © 2026</p>
+
+    <p class="credits">
+      Built with: ChatGPT | GitHub | Firebase
+    </p>
+
+  </div>
+
+</div>
+
 </div>
 
 <script src="script.js"></script>
@@ -161,6 +183,7 @@
 
 window.addEventListener("load", loadEnergyData);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut }
@@ -318,18 +341,37 @@ querySnapshot.forEach((doc) => {
 
   //  Add to TABLE (NEW)
   const row = `
-    <tr>
-      <td>${data.appliance}</td>
-      <td>${data.hours}</td>
-      <td>${data.watts}</td>
-      <td>$${dailyCost.toFixed(2)}</td>
-      <td>$${monthlyCost.toFixed(2)}</td>
-    </tr>
-  `;
+<tr onclick="selectRecord('${doc.id}')">
+  <td>${data.appliance}</td>
+  <td>${data.hours}</td>
+  <td>${data.watts}</td>
+  <td>$${dailyCost.toFixed(2)}</td>
+  <td>$${monthlyCost.toFixed(2)}</td>
+</tr>
+`;
 
   tableBody.innerHTML += row;
 
 });
+}
+let selectedRecordId = null;
+
+function selectRecord(id){
+  selectedRecordId = id;
+
+  if(confirm("Delete this record?")){
+    deleteRecord(id);
+  }
+}
+
+async function deleteRecord(id){
+  try {
+    await deleteDoc(doc(db, "energy_usage", id));
+    alert("Deleted successfully");
+    loadEnergyData();
+  } catch(e){
+    console.error(e);
+  }
 }
 
 </script>

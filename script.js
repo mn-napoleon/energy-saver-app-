@@ -56,6 +56,14 @@ document.getElementById("input").classList.remove("hidden");
 
 function calculate(){
 
+totalEnergy = 0;
+totalCost = 0;
+appliances = [];
+
+document.getElementById("applianceListDisplay").innerHTML = "";
+document.getElementById("dailyUsage").innerText = "";
+document.getElementById("dailyCost").innerText = "";
+
 let appliance = document.getElementById("appliance").value;
 
 let tip = "";
@@ -139,6 +147,10 @@ document.getElementById("dailyCost").innerText =
 "Estimated Daily Cost (24 hours): $" + totalCost.toFixed(2);
 
 navigateTo("summary");
+
+document.getElementById("appliance").value = "";
+document.getElementById("hours").value = "";
+document.getElementById("watts").value = "";
 
 }
 
@@ -311,4 +323,9 @@ function openNotification(){
 
 function closeNotification(){
   document.getElementById("notificationModal").classList.add("hidden");
+}
+
+function toggleDev(){
+  const section = document.getElementById("devContent");
+  section.classList.toggle("hidden");
 }
