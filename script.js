@@ -56,13 +56,6 @@ document.getElementById("input").classList.remove("hidden");
 
 function calculate(){
 
-totalEnergy = 0;
-totalCost = 0;
-appliances = [];
-
-document.getElementById("applianceListDisplay").innerHTML = "";
-document.getElementById("dailyUsage").innerText = "";
-document.getElementById("dailyCost").innerText = "";
 
 let appliance = document.getElementById("appliance").value;
 
@@ -84,7 +77,8 @@ else{
 tip = "Tip: Unplug devices when not in use.";
 }
 
-document.getElementById("dailyUsage").innerText += "\n" + tip;
+document.getElementById("dailyUsage").innerText =
+"Total Energy Used (24 hours): " + totalEnergy.toFixed(2) + " kWh\n" + tip;
 
 let hours = document.getElementById("hours").value;
 
@@ -110,43 +104,39 @@ list.appendChild(item);
 
 let cost = kwh * 0.12;
 
-const ctx2 = document.getElementById('usageChart');
-
-new Chart(ctx2, {
-type: 'pie',
-data: {
-labels: ['Used Energy','Remaining Energy (24h capacity)'],
-datasets: [{
-data: [totalEnergy, 24 - totalEnergy]
-}]
-}
-});
-
 totalEnergy += kwh;
 totalCost += cost;
 
-document.getElementById("dailyUsage").innerText =
-"Total Energy Used (24 hours): " + totalEnergy.toFixed(2) + " kWh";
+if(window.myChart){
+  window.myChart.destroy();
+}
+
+const ctx2 = document.getElementById('usageChart');
+
+window.myChart = new Chart(ctx2, {
+  type: 'pie',
+  data: {
+    labels: ['Used Energy','Remaining Energy'],
+    datasets: [{
+      data: [totalEnergy, Math.max(0, 24 - totalEnergy)]
+    }]
+  }
+});
 
 let tipsMessage = "";
 
 if(totalEnergy > 5){
-
-tipsMessage = "High energy usage detected. Try reducing appliance hours or switching off unused devices.";
-
-}
-else{
-
-tipsMessage = "Good energy usage. Continue using energy efficient appliances.";
-
+  tipsMessage = "High energy usage detected. Try reducing appliance hours.";
+} else {
+  tipsMessage = "Good energy usage. Continue using energy efficient appliances.";
 }
 
-document.getElementById("dailyUsage").innerText += "\n" + tipsMessage;
+document.getElementById("dailyUsage").innerText =
+"Total Energy Used (24 hours): " + totalEnergy.toFixed(2) + " kWh\n" +
+tip + "\n" + tipsMessage;
 
 document.getElementById("dailyCost").innerText =
 "Estimated Daily Cost (24 hours): $" + totalCost.toFixed(2);
-
-navigateTo("summary");
 
 document.getElementById("appliance").value = "";
 document.getElementById("hours").value = "";
