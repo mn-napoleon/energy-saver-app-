@@ -361,3 +361,32 @@ font-size:20px;
   cursor: pointer;
   font-weight: bold;
 }
+
+.summary-title{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.summary-card{
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding:15px;
+  border-radius:15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  margin-bottom:15px;
+}
+
+.appliance-list{
+  list-style:none;
+  padding:0;
+}
+
+.appliance-list li{
+  background:#1e1e1e;
+  margin:8px 0;
+  padding:10px;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}

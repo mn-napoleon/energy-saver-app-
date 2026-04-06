@@ -115,19 +115,20 @@
 
 <div id="summary" class="hidden">
 
-<h3>Usage Summary</h3>
+  <h3 class="summary-title"> Usage Summary</h3>
 
-<p id="dailyUsage"></p>
-<p id="dailyCost"></p>
+  <div class="summary-card">
+    <p id="dailyUsage"></p>
+    <p id="dailyCost"></p>
+  </div>
 
-<!--This will display all Appliances the user added-->
+  <h4>Appliances Used</h4>
+  <ul id="applianceListDisplay" class="appliance-list"></ul>
 
-<h4>Appliances Entered</h4>
-<ul id="applianceListDisplay"></ul>
+  <canvas id="usageChart"></canvas>
 
-<canvas id="usageChart"></canvas>
-
-<button onclick="navigateTo('tips')">Energy Tips</button>
+  <button onclick="navigateTo('input')" class="primary-btn">+ Add More</button>
+  <button onclick="navigateTo('home')" class="secondary-btn">Home</button>
 
 </div>
 
@@ -239,6 +240,7 @@ window.googleLogin = async function(){
 
 };
 
+
 window.logoutUser = async function(){
 
   await signOut(auth);
@@ -252,8 +254,19 @@ document.getElementById("submitEnergy").addEventListener("click", () => {
 
   setTimeout(() => {
     saveEnergy();
+    navigateTo("summary");
   }, 100);
 });
+
+import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+window.deleteRecord = async function(id){
+  if(confirm("Delete this record?")){
+    await deleteDoc(doc(db, "energy_usage", id));
+    loadEnergyData();
+  }
+}
+
 
 async function saveEnergy(){
 
@@ -347,13 +360,16 @@ querySnapshot.forEach((doc) => {
   list.appendChild(item);
 
   //  Add to TABLE (NEW)
-  const row = `
-<tr onclick="selectRecord('${doc.id}')">
+const row = `
+<tr>
   <td>${data.appliance}</td>
   <td>${data.hours}</td>
   <td>${data.watts}</td>
   <td>$${dailyCost.toFixed(2)}</td>
   <td>$${monthlyCost.toFixed(2)}</td>
+  <td>
+    <button onclick="deleteRecord('${doc.id}')">🗑️</button>
+  </td>
 </tr>
 `;
 
