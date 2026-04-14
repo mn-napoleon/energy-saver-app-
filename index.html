@@ -42,9 +42,9 @@
 
  <h1 class="appTitle">Smart Electricity Usage Monitor</h1>
     
-<h2>Energy Saver Login</h2>
+<h2>Welcome to Energy Saver</h2>
 
-<button id="googleBtn">Sign in with Google</button>
+<button id="startBtn">Start App</button>
 
 <!--button id="installBtn" style="display:none;">Download Energy Saver App</button-->
 
@@ -64,7 +64,6 @@
 
 </div>
 
-
 <p>Current Usage: 12 kWh</p>
 <p>Estimated Cost: $1.50</p>
 <h3>Energy Usage Chart</h3>
@@ -73,8 +72,6 @@
 <button onclick="navigateTo('input')">Add Appliance</button>
 
 <button onclick="navigateTo('loginPage')">⬅ Back</button>
-
-<button onclick="logoutUser()">Logout</button>
 
 </div>
 
@@ -185,16 +182,6 @@ window.addEventListener("load", loadEnergyData);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { 
-  getAuth, 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  signOut,
-  getRedirectResult
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import { onAuthStateChanged }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
 const firebaseConfig = {
@@ -207,47 +194,14 @@ appId: "1:569294028986:web:f1cd765cfef40cf64d4283"
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 
-onAuthStateChanged(auth, (user) => {
 
-  if(user){
-    navigateTo("home");
-    loadEnergyData();
-  } else {
-    navigateTo("loginPage");
-  }
-
-});
-
-const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
- document.getElementById("googleBtn").addEventListener("click", async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-
-    const user = result.user;
-
-    alert("Welcome " + user.displayName);
-
-    navigateTo("home");
-    loadEnergyData();
-
-  } catch (error) {
-    console.error("LOGIN ERROR:", error);
-    alert(error.message);
-  }
+document.getElementById("startBtn").addEventListener("click", () => {
+  navigateTo("home");
+  loadEnergyData();
 });
-
-
-window.logoutUser = async function(){
-
-  await signOut(auth);
-
-  navigateTo("loginPage");
-
-};
 
 document.getElementById("submitEnergy").addEventListener("click", () => {
   calculate();
@@ -279,25 +233,15 @@ async function saveEnergy(){
     return;
   }
 
-  const user = auth.currentUser;
-
-  //  ADD THIS BLOCK RIGHT HERE
-  if(!user){
-    alert("You must be logged in");
-    return;
-  }
 
   try {
 
-    await addDoc(collection(db, "energy_usage"), {
-
-      userId: user.uid,
-      appliance: appliance,
-      hours: Number(hours),
-      watts: Number(watts),
-      created: new Date()
-
-    });
+  await addDoc(collection(db, "energy_usage"), {
+  appliance: appliance,
+  hours: Number(hours),
+  watts: Number(watts),
+  created: new Date()
+});
 
     alert("Saved successfully");
     loadEnergyData();
@@ -313,16 +257,11 @@ document.getElementById("watts").value = "";
 }
 async function loadEnergyData(){
 
-  const user = auth.currentUser;
-  if(!user) return;
 
   const list = document.getElementById("applianceListDisplay");
   list.innerHTML = "";
 
-  const q = query(
-    collection(db, "energy_usage"),
-    where("userId", "==", user.uid)
-  );
+  const q = query(collection(db, "energy_usage"));
 
   const querySnapshot = await getDocs(q);
 
