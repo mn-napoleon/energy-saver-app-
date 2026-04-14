@@ -103,9 +103,12 @@ watts: watts,
 energy: kwh
 
 });
+
 let list = document.getElementById("applianceListDisplay");
 
 let icon = applianceIcons[appliance.toLowerCase()] || "icons/default.png";
+
+const item = document.createElement("li"); // ✅ THIS WAS MISSING
 
 item.innerHTML = `
   <div class="appliance-item">
