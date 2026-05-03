@@ -250,35 +250,28 @@ window.addEventListener("load", function(){
 
 });
 
-//if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator) {
 
-  //navigator.serviceWorker.register("service-worker.js").then(reg => {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(reg => {
+      console.log("Service Worker Registered");
 
-    //console.log("Service Worker Registered");
+      reg.onupdatefound = () => {
+        const newWorker = reg.installing;
 
-    //  Detect updates
-    //reg.onupdatefound = () => {
+        newWorker.onstatechange = () => {
+          if (newWorker.state === "installed") {
+            if (navigator.serviceWorker.controller) {
+              alert("New version available! Updating app...");
+              window.location.reload();
+            }
+          }
+        };
+      };
+    })
+    .catch(error => console.log("Service Worker Error:", error));
 
-      //const newWorker = reg.installing;
-
-      //newWorker.onstatechange = () => {
-
-        //if (newWorker.state === "installed") {
-
-          //if (navigator.serviceWorker.controller) {
-           // alert("New version available! Updating app...");
-           // window.location.reload();
-          //}
-
-        //}
-
-      //};
-
-    //};
-
-  //}).catch(error => console.log("Service Worker Error:", error));
-
-//}
+}
 
 let deferredPrompt;
 
