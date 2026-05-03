@@ -106,7 +106,9 @@ energy: kwh
 
 let list = document.getElementById("applianceListDisplay");
 
-let icon = applianceIcons[appliance.toLowerCase()] || "icons/default.png";
+let cleanName = appliance.trim().toLowerCase();
+
+let icon = applianceIcons[cleanName] || "icons/default.png";
 
 const item = document.createElement("li"); // ✅ THIS WAS MISSING
 
@@ -321,12 +323,13 @@ window.addEventListener("load", () => {
 window.onload = () => {
   navigateTo("loginPage");
 };
-function openNotification(){
-  document.getElementById("notificationModal").classList.remove("hidden");
+async function openNotification(){
+  await loadEnergyData();
+  document.getElementById("notificationModal").classList.add("show");
 }
 
 function closeNotification(){
-  document.getElementById("notificationModal").classList.add("hidden");
+  document.getElementById("notificationModal").classList.remove("show");
 }
 
 function toggleDev(){

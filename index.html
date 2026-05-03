@@ -45,6 +45,7 @@
 <h2>Welcome to Energy Saver</h2>
 
 <button id="startBtn">Start App</button>
+<input type="tel" id="phoneNumber" placeholder="Enter your phone number">
 
 <!--button id="installBtn" style="display:none;">Download Energy Saver App</button-->
 
@@ -72,6 +73,35 @@
 <button onclick="navigateTo('input')">Add Appliance</button>
 
 <button onclick="navigateTo('loginPage')">⬅ Back</button>
+
+ <!-- Developer Section (Home Page Only) -->
+  <div class="developer-section">
+    <div class="dev-header" onclick="toggleDev()">
+      <h3>Developer Info ▼</h3>
+    </div>
+
+    <div id="devContent" class="hidden">
+      <div class="dev-images">
+        <div class="dev-card">
+          <img src="developer.png" class="dev-img">
+          <p>Yeboah Napoleon Kofi</p>
+        </div>
+
+        <div class="dev-card">
+          <img src="developer2.png" class="dev-img">
+          <p>Owusu Teiku Emmanuel</p>
+        </div>
+
+        <div class="dev-card">
+          <img src="developer3.png" class="dev-img">
+          <p>Nana Opoku Darkwah</p>
+        </div>
+      </div>
+
+      <p>Energy Saver App © 2026</p>
+      <p class="credits">Built with: ChatGPT | GitHub | Firebase</p>
+    </div>
+  </div>
 
 </div>
 
@@ -126,6 +156,7 @@
 
   <button onclick="navigateTo('input')" class="primary-btn">+ Add More</button>
   <button onclick="navigateTo('home')" class="secondary-btn">Home</button>
+  <button onclick="showTips()">View Energy Tips</button>
 
 </div>
 
@@ -150,35 +181,38 @@
 
 </div>
 
-<div class="developer-section">
+<div id="notificationModal" class="modal">
+  <div class="modal-content">
+    <h3>Your Appliance Records</h3>
 
-  <div class="dev-header" onclick="toggleDev()">
-    <h3>Developer Info ▼</h3>
+    <table id="recordsTable">
+      <thead>
+        <tr>
+          <th>Appliance</th>
+          <th>Hours</th>
+          <th>Watts</th>
+          <th>Daily Cost</th>
+          <th>Monthly Cost</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button onclick="closeNotification()">Close</button>
   </div>
-
-  <div id="devContent" class="hidden">
-
-    <img src="developer.png" class="dev-img">
-
-    <h3>Yeboah Napoleon Kofi</h3>
-
-    <p>Energy Saver App © 2026</p>
-
-    <p class="credits">
-      Built with: ChatGPT | GitHub | Firebase
-    </p>
-
-  </div>
-
 </div>
-
 </div>
 
 <script src="script.js"></script>
 
 <script type="module">
 
-window.addEventListener("load", loadEnergyData);
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    loadEnergyData();
+  }, 500);
+});
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -198,18 +232,38 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+document.addEventListener("DOMContentLoaded", () => {
+
+  // START BUTTON
 document.getElementById("startBtn").addEventListener("click", () => {
+  const phone = document.getElementById("phoneNumber").value.trim();
+
+  if (!phone) {
+    alert("Please enter your phone number.");
+    return;
+  }
+
   navigateTo("home");
   loadEnergyData();
 });
 
-document.getElementById("submitEnergy").addEventListener("click", () => {
-  calculate();
+  // SUBMIT BUTTON
+document.getElementById("submitEnergy").addEventListener("click", async () => {
 
-  setTimeout(() => {
-    saveEnergy();
-    navigateTo("summary");
-  }, 100);
+  const appliance = document.getElementById("appliance").value.trim();
+  const hours = document.getElementById("hours").value.trim();
+  const watts = document.getElementById("watts").value.trim();
+
+  if (!appliance || !hours || !watts) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  calculate();
+  await saveEnergy();
+  navigateTo("summary");
+});
+
 });
 
 import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -234,21 +288,24 @@ async function saveEnergy(){
   }
 
 
-  try {
+try {
 
-  await addDoc(collection(db, "energy_usage"), {
+const phone = document.getElementById("phoneNumber").value.trim();
+
+await addDoc(collection(db, "energy_usage"), {
+  phone: phone,
   appliance: appliance,
   hours: Number(hours),
   watts: Number(watts),
   created: new Date()
 });
 
-    alert("Saved successfully");
-    loadEnergyData();
+  await loadEnergyData();   // Updates notification count immediately
+  alert("Saved successfully");
 
-  } catch(error){
-    console.error(error);
-  }
+} catch(error){
+  console.error(error);
+}
 
 document.getElementById("appliance").value = "";
 document.getElementById("hours").value = "";
@@ -261,7 +318,12 @@ async function loadEnergyData(){
   const list = document.getElementById("applianceListDisplay");
   list.innerHTML = "";
 
-  const q = query(collection(db, "energy_usage"));
+ const phone = document.getElementById("phoneNumber").value.trim();
+
+const q = query(
+  collection(db, "energy_usage"),
+  where("phone", "==", phone)
+);
 
   const querySnapshot = await getDocs(q);
 
@@ -273,49 +335,43 @@ document.getElementById("recordCount").innerText = count;
 //  OPTIONAL animation
 const bell = document.querySelector(".notification");
 
-if(bell){
-  if(count > 0){
-    bell.classList.add("active");
-  } else {
-    bell.classList.remove("active");
-  }
+if (bell) {
+  bell.classList.toggle("active", count > 0);
 }
 
 const tableBody = document.querySelector("#recordsTable tbody");
+
+// Stop if modal table is not in DOM
+if (!tableBody) return;
+
+// Clear old data
 tableBody.innerHTML = "";
 
+// Add new rows
 querySnapshot.forEach((doc) => {
-
   const data = doc.data();
 
-  //  CALCULATIONS
-  let kwh = (data.watts * data.hours)/1000;
-  let dailyCost = kwh * 0.12;
-  let monthlyCost = dailyCost * 30;
+  const kwh = (data.watts * data.hours) / 1000;
+  const dailyCost = kwh * 0.12;
+  const monthlyCost = dailyCost * 30;
 
-  //  Add to summary list (keep your old feature)
-  const item = document.createElement("li");
-  item.innerText = `${data.appliance} - ${data.hours} hrs - ${data.watts}W`;
-  list.appendChild(item);
-
-  //  Add to TABLE (NEW)
-const row = `
-<tr>
-  <td>${data.appliance}</td>
-  <td>${data.hours}</td>
-  <td>${data.watts}</td>
-  <td>$${dailyCost.toFixed(2)}</td>
-  <td>$${monthlyCost.toFixed(2)}</td>
-  <td>
-    <button onclick="deleteRecord('${doc.id}')">🗑️</button>
-  </td>
-</tr>
-`;
+  const row = `
+    <tr>
+      <td>${data.appliance}</td>
+      <td>${data.hours}</td>
+      <td>${data.watts}</td>
+      <td>$${dailyCost.toFixed(2)}</td>
+      <td>$${monthlyCost.toFixed(2)}</td>
+      <td>
+        <button onclick="deleteRecord('${doc.id}')">🗑️</button>
+      </td>
+    </tr>
+  `;
 
   tableBody.innerHTML += row;
-
 });
 }
+
 let selectedRecordId = null;
 
 function selectRecord(id){
@@ -336,28 +392,9 @@ async function deleteRecord(id){
   }
 }
 
+window.loadEnergyData = loadEnergyData;
+
 </script>
-
-<div id="notificationModal" class="modal hidden">
-
-  <div class="modal-content">
-    <h3>Your Appliance Records</h3>
-
-    <table id="recordsTable">
-      <thead>
-        <tr>
-          <th>Appliance</th>
-          <th>Hours</th>
-          <th>Watts</th>
-          <th>Daily Cost</th>
-          <th>Monthly Cost</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <button onclick="closeNotification()">Close</button>
-  </div>
 
 </div>
 
