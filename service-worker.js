@@ -1,11 +1,14 @@
-const CACHE_NAME = "energy-saver-v2"; //  change version when you update app
+const CACHE_NAME = "energy-saver-v3"; //  change version when you update app
 
 const urlsToCache = [
-  "/",
-  "index.html",
-  "style.css",
-  "script.js",
-  "energy-logo.png"
+  "./",
+  "./index.html",
+  "./style.css",
+  "./script.js",
+  "./manifest.json",
+  "./energy-logo.png",
+  "./bell.png",
+  "./ener.png"
 ];
 
 // INSTALL

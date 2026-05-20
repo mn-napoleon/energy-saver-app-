@@ -1,8 +1,9 @@
 {
   "name": "Energy Saver",
   "short_name": "EnergySaver",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
+  "display_override": ["standalone"],
   "background_color": "#ffff00",
   "theme_color": "#4CAF50",
   "orientation": "portrait",
