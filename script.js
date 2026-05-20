@@ -122,7 +122,7 @@ item.innerHTML = `
 
 list.appendChild(item);
 
-let cost = kwh * 0.12;
+let cost = kwh * 1.98;
 
 totalEnergy += kwh;
 totalCost += cost;
@@ -156,7 +156,7 @@ document.getElementById("dailyUsage").innerText =
 tip + "\n" + tipsMessage;
 
 document.getElementById("dailyCost").innerText =
-"Estimated Daily Cost (24 hours): $" + totalCost.toFixed(2);
+"Estimated Daily Cost (24 hours): GH₵" + totalCost.toFixed(2);
 
 }
 
@@ -168,7 +168,7 @@ navigateTo("tips");
 let estimatedMonthlyCost = totalCost * 30;
 
 document.getElementById("moneySaved").innerText =
-"Estimated Monthly Energy Cost: $" + estimatedMonthlyCost.toFixed(2);
+"Estimated Monthly Energy Cost: GH₵" + estimatedMonthlyCost.toFixed(2);
 
 }
 

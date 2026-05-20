@@ -66,7 +66,7 @@
 </div>
 
 <p>Current Usage: 12 kWh</p>
-<p>Estimated Cost: $1.50</p>
+<p>Estimated Cost: GH₵1.50</p>
 <h3>Energy Usage Chart</h3>
 <canvas id="energyChart"></canvas>
 
@@ -126,7 +126,7 @@
 <option value="Rice Cooker">
 </datalist>
 
-<input id="hours" placeholder="Hours per Day">
+<input id="hours" placeholder="Enter hours or minutes (Example: 2 or 20 mins)">
 
 <input id="watts" placeholder="Power (Watts)">
 
@@ -236,23 +236,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // START BUTTON
 document.getElementById("startBtn").addEventListener("click", () => {
+
   const phone = document.getElementById("phoneNumber").value.trim();
 
-  if (!phone) {
-    alert("Please enter your phone number.");
+  // Ghana phone number validation
+  const ghPhoneRegex = /^(?:\+233|0)[0-9]{9}$/;
+
+  if (!ghPhoneRegex.test(phone)) {
+    alert("Please enter a valid Ghana phone number");
     return;
   }
+
+  // Save phone number
+  localStorage.setItem("userPhone", phone);
 
   navigateTo("home");
   loadEnergyData();
 });
 
-  // SUBMIT BUTTON
-document.getElementById("submitEnergy").addEventListener("click", async () => {
+ // SUBMIT BUTTON
+  document.getElementById("submitEnergy").addEventListener("click", async () => {
 
   const appliance = document.getElementById("appliance").value.trim();
-  const hours = document.getElementById("hours").value.trim();
+
+  let hours = document.getElementById("hours").value.trim().toLowerCase();
+
   const watts = document.getElementById("watts").value.trim();
+
+  // Convert minutes into hours automatically
+  if (hours.includes("min")) {
+    hours = parseFloat(hours) / 60;
+    document.getElementById("hours").value = hours;
+  }
 
   if (!appliance || !hours || !watts) {
     alert("Please fill all fields");
@@ -352,7 +367,7 @@ querySnapshot.forEach((doc) => {
   const data = doc.data();
 
   const kwh = (data.watts * data.hours) / 1000;
-  const dailyCost = kwh * 0.12;
+  const dailyCost = kwh * 1.98;
   const monthlyCost = dailyCost * 30;
 
   const row = `
@@ -360,8 +375,8 @@ querySnapshot.forEach((doc) => {
       <td>${data.appliance}</td>
       <td>${data.hours}</td>
       <td>${data.watts}</td>
-      <td>$${dailyCost.toFixed(2)}</td>
-      <td>$${monthlyCost.toFixed(2)}</td>
+      <td>GH₵${dailyCost.toFixed(2)}</td>
+      <td>GH₵${monthlyCost.toFixed(2)}</td>
       <td>
         <button onclick="deleteRecord('${doc.id}')">🗑️</button>
       </td>
