@@ -1,12 +1,15 @@
 body{
 font-family: Arial;
-background:yellow;
-margin:0;
-padding:0;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
+background: yellow;
+margin: 0;
+padding: 0;
+
+display: flex;
+justify-content: center;
+
+align-items: flex-start;
+
+min-height: 100vh;
 }
 
 /* Splash Screen Style */
@@ -88,7 +91,7 @@ padding:20px;
 
 border-radius:20px;
 
-margin-top:40px;
+margin-top:10px;
 
 box-shadow:0 0 10px rgba(0,0,0,0.2);
 
