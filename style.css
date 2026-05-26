@@ -2,8 +2,7 @@ body{
   font-family: Arial;
   background: yellow;
   margin: 0;
-  padding: 0;
-  min-height: 100vh;
+  padding: 8px;
 }
 
 /* Splash Screen Style */
@@ -75,12 +74,12 @@ margin-bottom:10px;
 }
 
 .phone{
-  width: 90%;
+  width: 95%;
   max-width: 400px;
   background: white;
-  padding: 20px;
+  padding: 15px;
   border-radius: 20px;
-  margin: 10px auto;
+  margin: 5px auto;
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
@@ -205,7 +204,7 @@ background:#9bf6ff;
 
 #loginPage{
 
-padding:20px;
+padding:20px 15px;
 
 }
 
