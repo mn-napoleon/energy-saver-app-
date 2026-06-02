@@ -1,4 +1,4 @@
-const CACHE_NAME = "energy-saver-v4"; //  change version when you update app
+const CACHE_NAME = "energy-saver-v5"; //  change version when you update app
 
 const urlsToCache = [
   "./",

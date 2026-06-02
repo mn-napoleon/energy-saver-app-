@@ -2,7 +2,7 @@ body{
   font-family: Arial;
   background: yellow;
   margin: 0;
-  padding: 8px;
+  padding: 0;
 }
 
 /* Splash Screen Style */
@@ -74,13 +74,13 @@ margin-bottom:10px;
 }
 
 .phone{
-  width: 95%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 100%;
   background: white;
   padding: 15px;
   border-radius: 20px;
-  margin: 5px auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-sizing: border-box;
+  margin: 0;
 }
 
 button{
@@ -419,4 +419,14 @@ font-size:20px;
   width:28px;
   height:28px;
   object-fit:contain;
+}
+
+html,
+body{
+  width:100%;
+  min-height:100vh;
+}
+
+.phone{
+  min-height:100vh;
 }
