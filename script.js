@@ -297,7 +297,7 @@ window.addEventListener("load", () => {
 
   installBtn.addEventListener("click", async () => {
 
-    if (!deferredPrompt) return;
+  if (deferredPrompt) {
 
     deferredPrompt.prompt();
 
@@ -309,7 +309,15 @@ window.addEventListener("load", () => {
 
     installBtn.style.display = "none";
 
-  });
+  } else {
+
+    alert(
+      "To install Energy Saver:\n\nAndroid:\nTap 'Install App' when prompted.\n\niPhone:\nOpen in Safari → Share → Add to Home Screen."
+    );
+
+  }
+
+});
 
 });
 
